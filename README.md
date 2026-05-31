@@ -222,45 +222,7 @@ MAP_TOKEN=your_mapbox_token
 
 ---
 
-# 🚀 Installation
 
-## Clone Repository
-
-```bash
-git clone https://github.com/abhay-gupta-dev/WanderLust-major-project.git
-```
-
----
-
-## Navigate
-
-```bash
-cd WanderLust-major-project
-```
-
----
-
-## Install Dependencies
-
-```bash
-npm install
-```
-
----
-
-## Start Development Server
-
-```bash
-nodemon app.js
-```
-
-or
-
-```bash
-node app.js
-```
-
----
 
 # 📦 Major NPM Packages Used
 
