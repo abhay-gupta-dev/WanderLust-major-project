@@ -202,51 +202,6 @@ Cloudinary
 
 ---
 
-# ⚙️ Environment Variables
-
-Create a `.env` file:
-
-```env
-ATLASDB_URL=your_mongodb_connection_string
-
-SESSION_SECRET=your_session_secret
-
-CLOUD_NAME=your_cloudinary_name
-
-CLOUD_API_KEY=your_cloudinary_api_key
-
-CLOUD_API_SECRET=your_cloudinary_api_secret
-
-MAP_TOKEN=your_mapbox_token
-```
-
----
-
-
-
-# 📦 Major NPM Packages Used
-
-```bash
-express
-mongoose
-ejs
-ejs-mate
-passport
-passport-local
-passport-local-mongoose
-express-session
-connect-mongo
-connect-flash
-cloudinary
-multer
-multer-storage-cloudinary
-joi
-dotenv
-method-override
-node-geocoder
-```
-
----
 
 # 🎓 Learning Outcomes
 
