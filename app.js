@@ -61,7 +61,7 @@ const sessionOptions = {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax"
+         sameSite: "none"
     },
 };
 
@@ -71,6 +71,12 @@ app.use(session(sessionOptions));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use((req, res, next) => {
+    console.log("Authenticated:", req.isAuthenticated());
+    console.log("User:", req.user);
+    console.log("Session:", req.sessionID);
+    next();
+});
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
