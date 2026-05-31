@@ -20,7 +20,7 @@ const userRouter=require('./routes/user.js');
 const MongoStore = require('connect-mongo').default;
 
 const app=express();
-const port=8080;
+const port = process.env.PORT || 8080;
 const dbUrl=process.env.ATLASDB_URL;
 
 
@@ -55,19 +55,18 @@ store.on("error", function (e) {
 const sessionOptions = {
     store,
     secret: process.env.SESSION_SECRET,
-
     resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({ mongoUrl: dbUrl, touchAfter: 24 * 3600 }),
+    saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax"
     },
 };
 
 
-
+app.set('trust proxy', 1);
 app.use(session(sessionOptions));
 app.use(flash());
 app.use(passport.initialize());
