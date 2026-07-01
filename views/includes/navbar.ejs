@@ -63,10 +63,44 @@
            <b><a class="nav-link" href="/login">Log in</a></b>
 
        <% } %>
-       <% if(currentUser){ %> 
-          <b><a class="nav-link" href="/logout">Log out</a></b>
-        <% } %>
+   <% if(currentUser){ %>
+<div class="dropdown">
+ <a class="nav-link dropdown-toggle fw-bold d-flex align-items-center"
+   href="#"
+   role="button"
+   data-bs-toggle="dropdown">
 
+  <span class="user-avatar">
+    <%= currentUser?.username
+        ? currentUser.username.charAt(0).toUpperCase()
+        : "U" %>
+  </span>
+
+</a>
+
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li>
+      <a class="dropdown-item" href="/profile">
+        <i class="fa-solid fa-user me-2"></i>Profile
+      </a>
+    </li>
+
+    <li>
+      <a class="dropdown-item" href="/bookings">
+        <i class="fa-solid fa-calendar-check me-2"></i>My Bookings
+      </a>
+    </li>
+
+    <li><hr class="dropdown-divider"></li>
+
+    <li>
+      <a class="dropdown-item text-danger" href="/logout">
+        <i class="fa-solid fa-right-from-bracket me-2"></i>Logout
+      </a>
+    </li>
+  </ul>
+</div>
+<% } %>
        
        
 

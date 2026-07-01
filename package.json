@@ -17,7 +17,10 @@
   
     "scripts": {
   
-        "start": "node app.js",
+      
+    "start": "node app.js",
+  
+      
     "test": "echo \"Error: no test specified\" && exit 1"
   
     },
@@ -73,6 +76,9 @@
   
       
     "node-geocoder": "^4.4.1",
+  
+      
+    "nodemailer": "^8.0.11",
   
       
     "passport": "^0.7.0",

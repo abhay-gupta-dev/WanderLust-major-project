@@ -33,6 +33,107 @@
     </div>
     <% } %>
 
+    <!-- BOOKING FORM -->
+<div class="col-6 offset-3 mt-4 mb-2">
+  <div class="card shadow-sm border-0" style="border-radius:16px; overflow:hidden;">
+
+    <div style="background:#fe424d; padding: 1rem 1.5rem;">
+      <h5 class="text-white mb-0">
+        <i class="fa-solid fa-calendar-check me-2"></i>Reserve this stay
+      </h5>
+    </div>
+
+    <div class="card-body p-4">
+      <p class="fs-5 fw-medium mb-3">
+        &#8377;<%= listing.price.toLocaleString("en-IN") %>
+        <span class="text-muted fs-6 fw-normal">/ night</span>
+      </p>
+
+      <% if(currentUser) { %>
+        <% if(currentUser._id.equals(listing.owner._id)) { %>
+          <div class="alert alert-secondary py-2" style="border-radius:10px;">
+            <i class="fa-solid fa-house me-2"></i>You own this listing.
+          </div>
+        <% } else { %>
+          <form action="/listings/<%= listing._id %>/bookings" method="POST" id="bookingForm">
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label text-uppercase" style="font-size:11px;letter-spacing:0.06em;">Check-in</label>
+                <input type="date" name="booking[checkIn]" class="form-control" id="checkIn" required />
+              </div>
+              <div class="col-6">
+                <label class="form-label text-uppercase" style="font-size:11px;letter-spacing:0.06em;">Check-out</label>
+                <input type="date" name="booking[checkOut]" class="form-control" id="checkOut" required />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-uppercase" style="font-size:11px;letter-spacing:0.06em;">Guests</label>
+              <input type="number" name="booking[guests]" class="form-control" min="1" max="20" value="1" required />
+            </div>
+
+            <div class="p-3 mb-3 bg-light rounded-3" id="pricePreview" style="display:none;">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted" id="nightsLabel"></span>
+                <span id="nightsTotal"></span>
+              </div>
+              <hr class="my-2">
+              <div class="d-flex justify-content-between fw-medium">
+                <span>Total</span>
+                <span id="grandTotal"></span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn w-100 text-white fw-medium" style="background:#fe424d; border:none; border-radius:10px; padding:0.65rem;">
+              Reserve
+            </button>
+
+          </form>
+        <% } %>
+      <% } else { %>
+        <a href="/login" class="btn w-100 text-white fw-medium" style="background:#fe424d; border:none; border-radius:10px; padding:0.65rem;">
+          <i class="fa-solid fa-right-to-bracket me-2"></i>Login to Reserve
+        </a>
+      <% } %>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const pricePerNight = <%= listing.price %>;
+  const bookedRanges = <%- JSON.stringify(bookedRanges) %>;
+  const today = new Date().toISOString().split('T')[0];
+
+  const checkInInput = document.getElementById('checkIn');
+  const checkOutInput = document.getElementById('checkOut');
+
+  if(checkInInput) checkInInput.min = today;
+  if(checkOutInput) checkOutInput.min = today;
+
+  function updatePrice() {
+    const ci = new Date(checkInInput.value);
+    const co = new Date(checkOutInput.value);
+    if (!checkInInput.value || !checkOutInput.value || ci >= co) {
+      document.getElementById('pricePreview').style.display = 'none';
+      return;
+    }
+    const nights = Math.ceil((co - ci) / (1000 * 60 * 60 * 24));
+    const total = nights * pricePerNight;
+    document.getElementById('nightsLabel').textContent = `₹${pricePerNight.toLocaleString('en-IN')} × ${nights} night${nights > 1 ? 's' : ''}`;
+    document.getElementById('nightsTotal').textContent = `₹${total.toLocaleString('en-IN')}`;
+    document.getElementById('grandTotal').textContent = `₹${total.toLocaleString('en-IN')}`;
+    document.getElementById('pricePreview').style.display = 'block';
+  }
+
+  if(checkInInput) checkInInput.addEventListener('change', () => {
+    checkOutInput.min = checkInInput.value;
+    updatePrice();
+  });
+  if(checkOutInput) checkOutInput.addEventListener('change', updatePrice);
+</script>
+
     <!-- REVIEWS -->
     <div class="col-8 offset-3 mb-3">
       

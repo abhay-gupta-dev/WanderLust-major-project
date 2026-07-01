@@ -2,6 +2,7 @@
 if(process.env.NODE_ENV !== 'production'){
     require('dotenv').config();
 }
+
 const express=require('express');
 const mongoose=require('mongoose');
 const path=require('path');
@@ -17,6 +18,7 @@ const passport=require('passport');
 const LocalStrategy=require('passport-local');
 const User=require('./models/user.js');
 const userRouter=require('./routes/user.js');
+const bookingRouter = require('./routes/booking.js');
 const MongoStore = require('connect-mongo').default;
 
 const app=express();
@@ -57,13 +59,16 @@ const sessionOptions = {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-         sameSite: "none"
-    },
+   cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 👈 this line
+},
 };
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
 app.set('trust proxy', 1);
@@ -71,15 +76,22 @@ app.use(session(sessionOptions));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+// app.use((req, res, next) => {
+//     console.log("Authenticated:", req.isAuthenticated());
+//     console.log("User:", req.user);
+//     console.log("Session:", req.sessionID);
+//     next();
+// });
+
+
+
 app.use((req, res, next) => {
     console.log("Authenticated:", req.isAuthenticated());
     console.log("User:", req.user);
-    console.log("Session:", req.sessionID);
+    console.log("Session ID:", req.sessionID);
+    console.log("Passport:", req.session.passport);
     next();
 });
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
@@ -97,6 +109,7 @@ app.get("/", (req, res) => {
 app.use('/listings', listingRouter);
 app.use('/listings/:id/reviews', reviewRouter);
 app.use('/', userRouter);
+app.use('/listings/:id/bookings', bookingRouter);
 
 // 404 handler (ALWAYS LAST)
 app.use((req, res, next) => {

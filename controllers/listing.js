@@ -1,5 +1,6 @@
 const Listing = require('../models/listing.js');
 const geocoder = require('../utils/geocoder');
+const Booking = require('../models/booking.js');
 
 
 module.exports.index = async (req, res) => {
@@ -67,6 +68,8 @@ module.exports.createListing = async (req, res) => {
     res.redirect('/listings');
 }
 
+
+
 module.exports.showListing = async (req, res) => {
     const { id } = req.params;
 
@@ -82,12 +85,24 @@ module.exports.showListing = async (req, res) => {
         return res.redirect('/listings');
     }
 
+    // get booked date ranges for this listing
+    const bookings = await Booking.find({
+        listing: id,
+        status: { $ne: 'cancelled' },
+        checkOut: { $gte: new Date() }
+    });
+
+    const bookedRanges = bookings.map(b => ({
+        checkIn: b.checkIn,
+        checkOut: b.checkOut
+    }));
+
     res.render('listings/show.ejs', {
         listing: showListing,
-        title: 'Wanderlust Show your listing'
+        bookedRanges,
+        title: 'Wanderlust | ' + showListing.title
     });
-}
-
+};
 module.exports.renderEditForm = async (req, res) => {
     let { id } = req.params;
 
