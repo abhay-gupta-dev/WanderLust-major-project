@@ -7,7 +7,7 @@ const ExpressError = require('../utils/ExpressError.js');
 const {listingSchema,reviewSchema } = require('../schema.js');
 const listingController=require('../controllers/listing.js');
 const multer=require('multer');
-const { storage } = require('../cloudconfig.js');
+const { storage } = require('../cloudConfig.js');
 const upload=multer({storage});
 
 router.route('/')
