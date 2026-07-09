@@ -249,7 +249,6 @@ https://github.com/abhay-gupta-dev
 ---
 
 # 🌟 Live Project
-
 https://wanderlust-major-project-jzv9.onrender.com
 
 ---
