@@ -1,28 +1,38 @@
 <% layout('layouts/boilerplate') %>
 <div class="row mt-3">
-     <h2 class="col-6 offset-3">Sign Up on Wanderlust</h2>
+    <h2 class="col-6 offset-3">Sign Up on Wanderlust</h2>
     <div class="col-6 offset-3">
         <form action="/signup" method="POST" novalidate class="needs-validation">
-           
+
             <div class="mb-3">
-                <lable for="username" class="form-label">Username</lable>
-                <input name="username" id="username" placeholder="Enter your username" class="form-control" type="text" required />
-                 <div class="valid-feedback">Look's Good</div>
+                <label for="username" class="form-label">Username</label>
+                <input name="username" id="username" placeholder="Enter your username"
+                       class="form-control" type="text" minlength="3" required />
+                <div class="valid-feedback">Look's Good!</div>
+                <div class="invalid-feedback">Please choose a username (min 3 characters).</div>
             </div>
-          
+
             <div class="mb-3">
-                <lable for="email" class="form-label">Email</lable>
-                <input name="email" id="email" placeholder="Enter your email" class="form-control" type="email" required />
-                 
+                <label for="email" class="form-label">Email</label>
+                <input name="email" id="email" placeholder="Enter your email"
+                       class="form-control" type="email" required
+                       pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
+                <div class="valid-feedback">Look's Good!</div>
+                <div class="invalid-feedback">Please enter a valid email address.</div>
             </div>
+
             <div class="mb-3">
-                <lable for="password" class="form-label">Password</lable>
-                <input name="password" id="password" placeholder="Enter your password" class="form-control" type="password" required />
-                  
+                <label for="password" class="form-label">Password</label>
+                <input name="password" id="password" placeholder="Enter your password"
+                       class="form-control" type="password" required
+                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_\-+=]).{8,}$" />
+                <div class="valid-feedback">Look's Good!</div>
+                <div class="invalid-feedback">
+                    Min 8 characters, with an uppercase letter, a lowercase letter, a number, and a special character.
+                </div>
             </div>
+
             <button type="submit" class="btn btn-success">Sign Up</button>
-
-
         </form>
-     </div> 
-     </div> 
+    </div>
+</div>

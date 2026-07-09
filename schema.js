@@ -26,7 +26,8 @@ module.exports.listingSchema = Joi.object({
     country: Joi.string().trim().required().messages({
       "string.empty": "Country is required"
     }),
-    category: Joi.string().valid(         // ← add this block
+
+    category: Joi.string().valid(
       "trending",
       "rooms",
       "iconic cities",
@@ -47,8 +48,7 @@ module.exports.listingSchema = Joi.object({
   }).required()
 });
 
-
- module.exports.reviewSchema = Joi.object({
+module.exports.reviewSchema = Joi.object({
   review: Joi.object({
 
     rating: Joi.number().min(1).max(5).required().messages({
@@ -61,4 +61,27 @@ module.exports.listingSchema = Joi.object({
     })
 
   }).required()
+});
+
+module.exports.userSchema = Joi.object({
+  username: Joi.string().min(3).required().messages({
+    "string.empty": "Username is required",
+    "string.min": "Username must be at least 3 characters"
+  }),
+
+  email: Joi.string().email().required().messages({
+    "string.empty": "Email is required",
+    "string.email": "Please enter a valid email address"
+  }),
+
+  password: Joi.string()
+    .min(8)
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#^()_\\-+=]).{8,}$'))
+    .required()
+    .messages({
+      "string.empty": "Password is required",
+      "string.min": "Password must be at least 8 characters",
+      "string.pattern.base":
+        "Password must include an uppercase letter, a lowercase letter, a number, and a special character."
+    })
 });

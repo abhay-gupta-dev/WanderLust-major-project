@@ -33,6 +33,7 @@
       <div class="navbar-nav">
         
         <a class="nav-link" href="/listings">Explore</a>
+        <a class="nav-link" href="/about">About</a>
        
        
       </div>
@@ -70,11 +71,17 @@
    role="button"
    data-bs-toggle="dropdown">
 
-  <span class="user-avatar">
-    <%= currentUser?.username
-        ? currentUser.username.charAt(0).toUpperCase()
-        : "U" %>
-  </span>
+  <% if (currentUser.profileImage && currentUser.profileImage.filename !== 'default-avatar') { %>
+    <img src="<%= currentUser.profileImage.url %>" alt="Profile"
+      class="rounded-circle"
+      style="width:32px;height:32px;object-fit:cover;">
+  <% } else { %>
+    <span class="user-avatar">
+      <%= currentUser?.username
+          ? currentUser.username.charAt(0).toUpperCase()
+          : "U" %>
+    </span>
+  <% } %>
 
 </a>
 

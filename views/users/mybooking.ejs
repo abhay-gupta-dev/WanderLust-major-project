@@ -1,169 +1,240 @@
 <% layout('layouts/boilerplate') %>
 
+<style>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .booking-card {
+    border-radius: 20px;
+    overflow: hidden;
+    border: none;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+    animation: fadeInUp 0.5s ease backwards;
+  }
+  .booking-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(254, 66, 77, 0.15);
+  }
+
+  .booking-img-wrap {
+    position: relative;
+    height: 230px;
+    overflow: hidden;
+  }
+  .booking-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .booking-card:hover .booking-img-wrap img {
+    transform: scale(1.08);
+  }
+  .booking-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 45%);
+    display: flex;
+    align-items: flex-end;
+    padding: 16px;
+  }
+  .booking-img-overlay h5 {
+    color: #fff;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .status-pill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.4);
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+  }
+
+  .stay-timeline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .stay-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fe424d;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 4px rgba(254,66,77,0.15);
+  }
+  .stay-line {
+    flex: 1;
+    height: 2px;
+    background: repeating-linear-gradient(to right, #fe424d 0, #fe424d 4px, transparent 4px, transparent 8px);
+  }
+  .stay-dot.end {
+    background: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34,197,94,0.15);
+  }
+
+  .price-tag {
+    background: linear-gradient(135deg, #fe424d 0%, #ff7a7f 100%);
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 17px;
+    box-shadow: 0 6px 16px rgba(254,66,77,0.25);
+  }
+
+  .btn-cancel-fancy {
+    border: 1.5px solid #dc3545;
+    color: #dc3545;
+    background: transparent;
+    border-radius: 20px;
+    padding: 0.4rem 1.1rem;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+  }
+  .btn-cancel-fancy:hover {
+    background: #dc3545;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(220,53,69,0.3);
+  }
+
+  .btn-explore-fancy {
+    background: linear-gradient(135deg, #fe424d 0%, #ff7a7f 100%);
+    color: #fff;
+    border-radius: 25px;
+    padding: 0.6rem 1.8rem;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 6px 20px rgba(254,66,77,0.3);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .btn-explore-fancy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(254,66,77,0.4);
+    color: #fff;
+  }
+
+  .empty-state-icon {
+    font-size: 64px;
+    background: linear-gradient(135deg, #fe424d 0%, #ff7a7f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+</style>
+
 <div class="container py-5">
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
     <div>
       <h2 class="fw-bold mb-1">My Bookings</h2>
-      <p class="text-muted mb-0">
-        Manage your trips and reservations
-      </p>
+      <p class="text-muted mb-0">Manage your trips and reservations</p>
     </div>
 
-```
-<a href="/listings"
-   class="btn text-white"
-   style="background:#fe424d;">
-  <i class="fa-regular fa-compass me-1"></i>
-  Explore Stays
-</a>
-```
-
+    <a href="/listings" class="btn-explore-fancy text-decoration-none">
+      <i class="fa-regular fa-compass me-1"></i> Explore Stays
+    </a>
   </div>
 
-<% if(bookings.length === 0){ %>
+  <% if (bookings.length === 0) { %>
 
-```
-<div class="card border-0 shadow-sm text-center py-5">
-  <i class="fa-solid fa-calendar-xmark mb-3"
-     style="font-size:50px;color:#fe424d;"></i>
+    <div class="card border-0 shadow-sm text-center py-5 rounded-4">
+      <i class="fa-solid fa-calendar-xmark empty-state-icon mb-3"></i>
+      <h4 class="fw-bold">No Bookings Yet</h4>
+      <p class="text-muted mb-4">Start exploring amazing destinations and book your next stay.</p>
+      <a href="/listings" class="btn-explore-fancy mx-auto text-decoration-none" style="width:200px;">
+        Explore Stays
+      </a>
+    </div>
 
-  <h4>No Bookings Yet</h4>
+  <% } else { %>
 
-  <p class="text-muted">
-    Start exploring amazing destinations.
-  </p>
+    <div class="row g-4">
 
-  <a href="/listings"
-     class="btn text-white mx-auto"
-     style="background:#fe424d;width:180px;">
-    Explore Stays
-  </a>
-</div>
-```
+      <% bookings.forEach((booking, i) => { %>
+        <% if (booking.listing) { %>
 
-<% } else { %>
+          <div class="col-lg-6">
+            <div class="booking-card" style="animation-delay: <%= i * 0.08 %>s;">
 
-```
-<div class="row g-4">
+              <div class="booking-img-wrap">
+                <span class="status-pill text-white"
+                  style="background:
+                    <%= booking.status === 'confirmed' ? 'rgba(25,135,84,0.85)'
+                        : booking.status === 'cancelled' ? 'rgba(220,53,69,0.85)'
+                        : 'rgba(254,66,77,0.85)' %>;">
+                  <%= booking.status %>
+                </span>
+                <img src="<%= booking.listing.image.url %>" alt="<%= booking.listing.title %>">
+                <div class="booking-img-overlay">
+                  <h5><%= booking.listing.title %></h5>
+                </div>
+              </div>
 
-  <% bookings.forEach(booking => { %>
+              <div class="p-4">
 
-    <% if(booking.listing){ %>
+                <p class="text-muted mb-3">
+                  <i class="fa-solid fa-location-dot me-1" style="color:#fe424d;"></i>
+                  <%= booking.listing.location %>
+                </p>
 
-    <div class="col-lg-6">
+                <div class="stay-timeline">
+                  <div class="text-center" style="min-width:90px;">
+                    <div class="stay-dot mx-auto mb-1"></div>
+                    <small class="text-muted d-block" style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;">Check In</small>
+                    <strong style="font-size:13px;"><%= new Date(booking.checkIn).toDateString() %></strong>
+                  </div>
+                  <div class="stay-line"></div>
+                  <div class="text-center" style="min-width:90px;">
+                    <div class="stay-dot end mx-auto mb-1"></div>
+                    <small class="text-muted d-block" style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;">Check Out</small>
+                    <strong style="font-size:13px;"><%= new Date(booking.checkOut).toDateString() %></strong>
+                  </div>
+                </div>
 
-      <div class="card border-0 shadow-sm h-100">
+                <hr>
 
-        <img
-          src="<%= booking.listing.image.url %>"
-          class="card-img-top"
-          alt="<%= booking.listing.title %>"
-          style="height:220px;object-fit:cover;"
-        >
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="mb-2 text-muted" style="font-size:14px;">
+                      <i class="fa-solid fa-user-group me-1"></i>
+                      <%= booking.guests %> Guest(s)
+                    </p>
+                    <span class="price-tag">₹<%= booking.totalPrice.toLocaleString('en-IN') %></span>
+                  </div>
 
-        <div class="card-body">
+                  <% if (booking.status !== 'cancelled') { %>
+                    <form method="POST" action="/listings/<%= booking.listing._id %>/bookings/<%= booking._id %>/cancel">
+                      <button class="btn-cancel-fancy">Cancel Booking</button>
+                    </form>
+                  <% } %>
+                </div>
 
-          <div class="d-flex justify-content-between align-items-start">
-
-            <h5 class="fw-bold mb-2">
-              <%= booking.listing.title %>
-            </h5>
-
-            <span
-              class="badge"
-              style="
-                background:
-                <%= booking.status === 'confirmed'
-                    ? '#198754'
-                    : booking.status === 'cancelled'
-                    ? '#dc3545'
-                    : '#fe424d'
-                %>;
-              "
-            >
-              <%= booking.status %>
-            </span>
-
+              </div>
+            </div>
           </div>
 
-          <p class="text-muted mb-3">
-            <i class="fa-solid fa-location-dot me-1"></i>
-            <%= booking.listing.location %>
-          </p>
-
-          <div class="row">
-
-            <div class="col-6">
-              <small class="text-muted d-block">
-                Check In
-              </small>
-
-              <strong>
-                <%= new Date(booking.checkIn).toDateString() %>
-              </strong>
-            </div>
-
-            <div class="col-6">
-              <small class="text-muted d-block">
-                Check Out
-              </small>
-
-              <strong>
-                <%= new Date(booking.checkOut).toDateString() %>
-              </strong>
-            </div>
-
-          </div>
-
-          <hr>
-
-          <div class="d-flex justify-content-between align-items-center">
-
-            <div>
-
-              <p class="mb-1">
-                <i class="fa-solid fa-user-group me-1"></i>
-                <%= booking.guests %> Guest(s)
-              </p>
-
-              <h5 class="mb-0 fw-bold">
-                ₹<%= booking.totalPrice.toLocaleString('en-IN') %>
-              </h5>
-
-            </div>
-
-            <% if(booking.status !== 'cancelled'){ %>
-
-            <form
-              method="POST"
-              action="/listings/<%= booking.listing._id %>/bookings/<%= booking._id %>/cancel"
-            >
-
-              <button
-                class="btn btn-outline-danger btn-sm">
-                Cancel Booking
-              </button>
-
-            </form>
-
-            <% } %>
-
-          </div>
-
-        </div>
-
-      </div>
+        <% } %>
+      <% }) %>
 
     </div>
 
-    <% } %>
-
-  <% }) %>
-
-</div>
-```
-
-<% } %>
+  <% } %>
 
 </div>

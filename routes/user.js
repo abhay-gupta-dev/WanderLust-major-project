@@ -6,16 +6,23 @@ const passport=require('passport');
 const { saveRedirectUrl, isLoggedIn } = require('../middleware.js');
 const userController=require('../controllers/user.js');
 const Booking = require('../models/booking.js');
+const { validateUser } = require('../middleware.js');
+const multer = require('multer');
+const { profileStorage } = require('../cloudConfig.js');
+const upload = multer({ storage: profileStorage });
 
 
 router.route('/signup')
-.get( userController.renderSignupForm)
-.post(wrapAsync(userController.signup));
+.get(userController.renderSignupForm)
+.post(validateUser, wrapAsync(userController.signup));   // ← added validateUser
 
 router.route('/login')
 .get(userController.renderLoginForm)
 .post(saveRedirectUrl,passport.authenticate('local', { failureRedirect: '/login' ,failureFlash:true}),userController.login);
  
+router.get('/about', (req, res) => {
+    res.render('listings/about', { title: 'About Wanderlust' });
+});
  router.get('/logout',userController.logout);
 router.get('/profile', async (req, res) => {
    
@@ -41,6 +48,7 @@ router.post('/profile/edit', isLoggedIn, wrapAsync(async (req, res) => {
     req.flash('success', 'Username updated!');
     res.redirect('/profile');
 }));
+router.post('/profile/photo', isLoggedIn, upload.single('profileImage'), wrapAsync(userController.uploadProfilePhoto));
 router.get('/bookings', isLoggedIn, async (req, res) => {
 
     const bookings = await Booking.find({

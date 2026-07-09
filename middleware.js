@@ -1,6 +1,6 @@
 const Listing=require('./models/listing.js');
 const Review=require('./models/review.js');
-const { listingSchema, reviewSchema } = require('./schema.js');
+const { listingSchema, reviewSchema, userSchema } = require('./schema.js');   // ← add userSchema
 const ExpressError = require('./utils/ExpressError.js');
 
 const isLoggedIn = (req, res, next) => {
@@ -81,9 +81,22 @@ const validateReview = (req, res, next) => {
     }
 };
 
+const validateUser = (req, res, next) => {
+    let { error } = userSchema.validate(req.body, {
+        abortEarly: false
+    });
+
+    if (error) {
+        const errMsg = error.details
+            .map(el => el.message)
+            .join(", ");
+
+        req.flash('error', errMsg);
+        return res.redirect('/signup');
+    }
+    next();
+};
 
 
-module.exports = { isLoggedIn, saveRedirectUrl,isOwner,isauthor,validateListing,validateReview };
 
-
-
+module.exports = { isLoggedIn, saveRedirectUrl, isOwner, isauthor, validateListing, validateReview, validateUser };
